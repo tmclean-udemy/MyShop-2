@@ -79,14 +79,12 @@ namespace MyShop.DataAccess.InMemory
 
             if (productToDelete != null)
             {
-                products.Remove(productToDelete)
+                products.Remove(productToDelete);
             }
             else
             {
                 throw new Exception("No product found.");
             }
         }
-    }
-
     }
 }
