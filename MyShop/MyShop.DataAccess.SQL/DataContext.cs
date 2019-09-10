@@ -13,7 +13,7 @@ namespace MyShop.DataAccess.SQL
         //Contructor to captire and pass in the connection string that base classes expecting
         public DataContext()
             //Looks for "DefailtConnection" in the Web.config
-            //Can acturally pass in a connection string
+            //Can actually pass in a connection string
             : base("DefaultConnection")
         {
 
