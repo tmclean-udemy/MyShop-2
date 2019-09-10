@@ -1,5 +1,6 @@
 ﻿using MyShop.Core.Contracts;
 using MyShop.Core.Models;
+using MyShop.Core.View_Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using System.Web;
 
 namespace MyShop.Services
 {
-    public class BasketService
+    public class BasketService : IBasketService
     {
         IRepository<Product> productContext;
         IRepository<Basket> basketContext;
@@ -147,7 +148,77 @@ namespace MyShop.Services
                 basketContext.Commit();
             }
         }
+
+        //Now we have to create a view model to get information about the product, ie, price, description, color...
+        public List<BasketItemViewModel> GetBasketItems(HttpContextBase httpContext)
+        {
+            //Get basket from db
+            // If it doesn't exist, don't create one
+            Basket basket = GetBasket(httpContext, false);
+
+            if (basket != null)
+            {
+
+                //Linq query
+                var results = (from b in basket.BasketItems
+                               join p in productContext.Collection() on b.ProductId equals p.Id
+                               select new BasketItemViewModel()
+                               {
+                                   // Basket table
+                                   Id = b.Id,
+                                   Quantity = b.Quantity,
+                                   // Products table
+                                   ProductName = p.Name,
+                                   Image = p.Image,
+                                   Price = p.Price
+                               }
+                              //Convert the result into a list
+                              ).ToList();
+                //Then return the results
+                return results;
+            }
+            // If no basket, return new empty list of basket items
+            else
+            {
+                return new List<BasketItemViewModel>();
+            }
+        }
+
+
+
+        // Basket Summary or Total list and Total Quantity
+        //Need to create anothe view model
+        public BasketSummaryViewModel GetBasketSummary(HttpContextBase httpContext)
+        {
+            //Dont create basket if it's currently empty
+            Basket basket = GetBasket(httpContext, false);
+
+            //Use the view model and default with 0,0
+            BasketSummaryViewModel model = new BasketSummaryViewModel(0, 0);
+            if (basket != null)
+            {
+                //If we do have a basket, we have to find out how many items are in the basket
+                // int? stores a null value and return a null value
+                int? basketCount = (from item in basket.BasketItems
+                                    select item.Quantity).Sum();
+
+                decimal? basketTotal = (from item in basket.BasketItems
+                                        join p in productContext.Collection() on item.ProductId equals p.Id
+                                        select item.Quantity * p.Price).Sum();
+                //If there is a basket count, return that value, otherwise null, return zero
+                model.BasketCount = basketCount ?? 0;
+                model.BasketTotal = basketTotal ?? decimal.Zero;
+
+                return model;
+            }
+            else
+            {
+                return model;
+            }
+
+            //Now we need to create an interface for the basket service
+        }
+
     }
 }
 
-//Now we have to create a view model to get information about the product, ie, price, description, color...
