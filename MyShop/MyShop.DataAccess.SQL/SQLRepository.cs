@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MyShop.Core.Models;
+using MyShop.Core.Contracts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MyShop.DataAccess.SQL
 {
-    class SQLRepository
+    public class SQLRepository<T> : IRepository<T> where T : EntityBase
     {
     }
 }
