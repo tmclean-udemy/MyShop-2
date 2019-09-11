@@ -47,7 +47,7 @@ namespace MyShop.Services
                 // And if basket isn't empty...
                 if (!string.IsNullOrEmpty(basketId))
                 {
-                    basket = basketContext.Find(basketId)
+                    basket = basketContext.Find(basketId);
                 }
                 // If basket is empty, create the basket
                 else
