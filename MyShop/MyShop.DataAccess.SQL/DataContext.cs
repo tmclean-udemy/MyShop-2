@@ -23,5 +23,11 @@ namespace MyShop.DataAccess.SQL
         public DbSet<ProductCategory> ProductCategories { get; set; }
         public DbSet<Basket> Baskets { get; set; }
         public DbSet<BasketItem> BasketItems { get; set; }
+
+        //2nd Add Customer Model to DB
+        public DbSet<Customer> Customers { get; set; }
+        // 3rd We add migration
+
+
     }
 }
